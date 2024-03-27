@@ -3,14 +3,14 @@ const ctx = canvas.getContext("2d");
 
 /* Assingment 1 - Step 1 */
 let checkerBoard = [
-    ['', new Piece(0, 1, "red", "true"), '', new Piece(0, 3, "red", "false"), '', new Piece(0, 5, "red", "false"), '', new Piece(0, 7, "red", "false")],
+    ['', new Piece(0, 1, "red", "false"), '', new Piece(0, 3, "red", "false"), '', new Piece(0, 5, "red", "false"), '', new Piece(0, 7, "red", "false")],
     [new Piece(1, 0, "red", "false"), '', new Piece(1, 2, "red", "false"), '', new Piece(1, 4, "red", "false"), '', new Piece(1, 6, "red", "false"), ''],
     ['', new Piece(2, 1, "red", "false"), '', new Piece(2, 3, "red", "false"), '', new Piece(2, 5, "red", "false"), '', new Piece(2, 7, "red", "false")],
     ['', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
     [new Piece(5, 0, "grey", "false"), '', new Piece(5, 2, "grey", "false"), '', new Piece(5, 4, "grey", "false"), '', new Piece(5, 6, "grey", "false"), ''],
-    ['', new Piece(6, 1, "grey", "false"), '', new Piece(6, 3, "grey", "true"), '', new Piece(6, 5, "grey", "false"), '', new Piece(6, 7, "grey", "false")],
-    [new Piece(7, 0, "grey", "false"), '', new Piece(7, 2, "grey", "false"), '', new Piece(7, 4, "grey", "false"), '', new Piece(7, 6, "grey", "true"), '']
+    ['', new Piece(6, 1, "grey", "false"), '', new Piece(6, 3, "grey", "false"), '', new Piece(6, 5, "grey", "false"), '', new Piece(6, 7, "grey", "false")],
+    [new Piece(7, 0, "grey", "false"), '', new Piece(7, 2, "grey", "false"), '', new Piece(7, 4, "grey", "false"), '', new Piece(7, 6, "grey", "false"), '']
 ];
 
 /* Assingment 1 - Step */
@@ -88,7 +88,7 @@ function Piece(row, col, color, isClicked, isKing) {
     this.isKing = isKing;
     this.draw = function () {
 
-       if(isClicked == "true") {
+        if (isClicked == "true") {
             let radius = 40;
             ctx.fillStyle = "yellow";
             ctx.beginPath();
@@ -102,21 +102,21 @@ function Piece(row, col, color, isClicked, isKing) {
     }
 }
 
-// function getSelectedPiece() {
-//     let isClicked = [];
+function getSelectedPiece() {
+    let isClicked = [];
 
-//     for (let row = 0; row < checkerBoard.length; row++) {
-//         for (let col = 0; col < checkerBoard[row].length; col++) {
-//             let isClickedValue = checkerBoard[row][col].isClicked;
-//             if (isClickedValue !== undefined && isClickedValue !== null && isClickedValue !== "false") {
-//                 isClicked.push(checkerBoard[row][col]);
-//             } else {
-//                 isClicked.push("null");
-//             }
-//         }
-//     }
-//     return isClicked;
-// }
+    for (let row = 0; row < checkerBoard.length; row++) {
+        for (let col = 0; col < checkerBoard[row].length; col++) {
+            let isClickedValue = checkerBoard[row][col].isClicked;
+            if (isClickedValue !== undefined && isClickedValue !== null && isClickedValue !== "false") {
+                isClicked.push(checkerBoard[row][col]);
+            } else {
+                isClicked.push("null");
+            }
+        }
+    }
+    return isClicked;
+}
 
 /* Assingment 1 - Step */
 document.addEventListener("DOMContentLoaded", function () {
@@ -136,20 +136,37 @@ canvas.onclick = function (event) {
 
     console.log("Row: " + row + "| Col: " + col);
 
+    let getPieceClicked = getSelectedPiece();
+
     if (row % 2 == 0) {
         if (col % 2 !== 0) {
             color = checkerBoard[row][col];
             if (color !== '') {
-                alert(color);
+                // alert(color);
+            } else if (checkerBoard[row][col] == "") {
+                alert("you can move");
             }
+        }
+        else {
+            alert("you cannot move");
         }
     } else if (row % 2 !== 0) {
         if (col % 2 == 0) {
             color = checkerBoard[row][col];
             if (color !== '') {
-                alert(color);
+                // alert(color);
+            } else if (checkerBoard[row][col] == "") {
+                alert("you can move");
             }
         }
-    }
+        else {
+            alert("you CAN'T move");
+        }
+    } 
+    checkerBoard[row][col].isClicked = "true";
+
+
+    drawBoard(checkerBoard);
+    drawPieces(checkerBoard);
 }
 
