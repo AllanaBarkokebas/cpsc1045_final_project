@@ -1,79 +1,106 @@
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
-let checkerBoard = [];
-let color;
+let checkerBoard = [
+    ['', 'red', '', 'red', '', 'red', '', 'red'],
+    ['red', '', 'red', '', 'red', '', 'red', ''],
+    ['', 'red', '', 'red', '', 'red', '', 'red'],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['grey', '', 'grey', '', 'grey', '', 'grey', ''],
+    ['', 'grey', '', 'grey', '', 'grey', '', 'grey'],
+    ['grey', '', 'grey', '', 'grey', '', 'grey', ''],
+];
 
+function drawBoard(checker) {
 
-function initializeBoard(checkers) {
-    for (let row = 0; row < 8; row++) {
-        checkers[row] = [];
-        for (let col = 0; col < 8; col++) {
-            if ((row + col) % 2 === 0 && row < 3) {
-                checkers[row][col] = "red";
-            } else if ((row + col) % 2 === 0 && row > 4) {
-                checkers[row][col] = "gray";
-            } else {
-                checkers[row][col] = "";
-            }
-        }
-    }
-    console.log(checkerBoard);
-}
-
-function drawBoard() {
     let y = 0;
     let x;
 
-    for (let row = 0; row < 8; row++) {
+    for (let row = 0; row < checker.length; row++) {
         x = 0;
-        for (let col = 0; col < 8; col++) {
+        for (let col = 0; col < checker[row].length; col++) {
             if ((row + col) % 2 === 0) {
-                ctx.fillStyle = "white";
+                drawSquare(x, y, "white");
             } else {
-                ctx.fillStyle = "black";
+                drawSquare(x, y, "black");
             }
-            ctx.beginPath();
-            ctx.fillRect(x, y, 100, 100);
             x += 100;
         }
         y += 100;
     }
-    drawPieces();
+
 }
 
-function drawPieces() {
+function drawSquare(x, y, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.stroke();
+    ctx.fillRect(x, y, 100, 100);
+}
 
+function drawCircle(x, y, color) {
+    let radius = 35;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+}
+
+function drawPieces(checker) {
     let y = 50;
     let x;
-    for (let row = 0; row < 8; row++) {
+    for (let row = 0; row < checker.length; row++) {
         x = 50;
-        for (let col = 0; col < 8; col++) {
+        for (let col = 0; col < checker[row].length; col++) {
             if ((row + col) % 2 !== 0) {
                 if (row < 3) {
-                    ctx.fillStyle = "red";
-                    ctx.beginPath();
-                    ctx.arc(x, y, 35, 0, 2 * Math.PI);
-                    ctx.fill();
-                    ctx.stroke();
+                    color = "red";
+                    drawCircle(x, y, color);
                 } else if (row > 4) {
-                    ctx.fillStyle = "grey";
-                    ctx.beginPath();
-                    ctx.arc(x, y, 35, 0, 2 * Math.PI);
-                    ctx.fill();
-                    ctx.stroke();
+                    color = "grey";
+                    drawCircle(x, y, color);
                 }
             }
             x += 100;
         }
         y += 100;
     }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    drawBoard(checkerBoard);
+    drawPieces(checkerBoard);
+});
+
+canvas.onclick = function (event) {
+
+    x = event.offsetX;
+    y = event.offsetY;
+
+    let row = Math.floor(y / 100);
+    let col = Math.floor(x / 100);
+
+    console.log("Row: " + row + "| Col: " + col);
+
+    if (row % 2 == 0) {
+        if (col % 2 !== 0) {
+            color = checkerBoard[row][col];
+            if (color == 'red' || color == 'grey') {
+                alert(color);
+            }
+        }
+    } else if (row % 2 !== 0) {
+        if (col % 2 == 0) {
+            color = checkerBoard[row][col];
+            if (color == 'red' || color == 'grey') {
+                alert(color);
+            }
+        }
+    }
 
 }
 
 
-
-
-initializeBoard(checkerBoard);
-drawBoard();
 
