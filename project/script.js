@@ -1,35 +1,41 @@
-const canvas = document.getElementById("myCanvas");
+const canvas = document.getElementById("my-canvas");
 const ctx = canvas.getContext("2d");
 
 /* Assingment 1 - Step 1 */
 let checkerBoard = [
-    ['', new Piece(0, 1, "red", "false"), '', new Piece(0, 3, "red", "false"), '', new Piece(0, 5, "red", "false"), '', new Piece(0, 7, "red", "false")],
-    [new Piece(1, 0, "red", "false"), '', new Piece(1, 2, "red", "false"), '', new Piece(1, 4, "red", "false"), '', new Piece(1, 6, "red", "false"), ''],
-    ['', new Piece(2, 1, "red", "false"), '', new Piece(2, 3, "red", "false"), '', new Piece(2, 5, "red", "false"), '', new Piece(2, 7, "red", "false")],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    [new Piece(5, 0, "grey", "false"), '', new Piece(5, 2, "grey", "false"), '', new Piece(5, 4, "grey", "false"), '', new Piece(5, 6, "grey", "false"), ''],
-    ['', new Piece(6, 1, "grey", "false"), '', new Piece(6, 3, "grey", "false"), '', new Piece(6, 5, "grey", "false"), '', new Piece(6, 7, "grey", "false")],
-    [new Piece(7, 0, "grey", "false"), '', new Piece(7, 2, "grey", "false"), '', new Piece(7, 4, "grey", "false"), '', new Piece(7, 6, "grey", "false"), '']
+    ['', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey'],
+    ['darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', ''],
+    ['', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey'],
+    ['', '', '', '', '', '', 'burlywood', ''],
+    ['', 'darkslategrey', '', '', '', '', '', ''],
+    ['burlywood', '', 'burlywood', '', 'burlywood', '', 'burlywood', ''],
+    ['', 'burlywood', '', 'burlywood', '', 'burlywood', '', 'burlywood'],
+    ['burlywood', '', 'burlywood', '', 'burlywood', '', 'burlywood', '']
 ];
 
+for (let y = 0; y < checkerBoard.length; y++) {
+    for (let x = 0; x < checkerBoard[y].length; x++) {
+        if (checkerBoard[y][x] === 'darkslategrey') {
+            checkerBoard[y][x] = new Piece(y, x, "darkslategrey")
+        } else if (checkerBoard[y][x] === 'burlywood') {
+            checkerBoard[y][x] = new Piece(y, x, 'burlywood')
+        }
+    }
+}
+
 /* Assingment 1 - Step */
-function drawBoard(checker) {
+function drawBoard() {
 
-    let y = 0;
-    let x;
-
-    for (let row = 0; row < checker.length; row++) {
-        x = 0;
-        for (let col = 0; col < checker[row].length; col++) {
+    for (let row = 0; row < checkerBoard.length; row++) {
+        let y = row * 100;
+        for (let col = 0; col < checkerBoard[row].length; col++) {
+            let x = col * 100
             if ((row + col) % 2 === 0) {
-                drawSquare(x, y, "white");
+                drawSquare(x, y, "maroon");
             } else {
                 drawSquare(x, y, "black");
             }
-            x += 100;
         }
-        y += 100;
     }
 
 }
@@ -43,130 +49,173 @@ function drawSquare(x, y, color) {
 }
 
 /* Assingment 1 - Step */
-function drawCircle(x, y, color) {
-    let radius = 35;
-    ctx.fillStyle = color;
+function drawCircle(x, y, primaryColor) {
+    let radius = 45;
+    ctx.fillStyle = primaryColor;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI);
     ctx.fill();
+    // ctx.stroke();
+
+    let secondaryColor = 'goldenrod';
+    if (primaryColor === 'darkslategrey') {
+        secondaryColor = 'grey';
+    }
+
+    radius = 40;
+    ctx.strokeStyle = secondaryColor;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI)
     ctx.stroke();
 }
 
 /* Assingment 1 - Step / Assignemtn2 - Step 3*/
-function drawPieces(checker) {
-    let y = 50;
-    let x;
-
-    for (let row = 0; row < checker.length; row++) {
-        x = 50;
-        for (let col = 0; col < checker[row].length; col++) {
-            let isClickedValue = checkerBoard[row][col].isClicked
-            if ((row + col) % 2 !== 0) {
-                if (row < 3) {
-                    color = "red";
-                    let pieceDrawing = new Piece(y, x, color, isClickedValue);
-                    pieceDrawing.draw();
-
-                } else if (row > 4) {
-                    color = "grey";
-                    let pieceDrawing = new Piece(y, x, color, isClickedValue);
-                    pieceDrawing.draw();
-                }
+function drawPieces() {
+    for (let row = 0; row < checkerBoard.length; row++) {
+        for (let col = 0; col < checkerBoard[row].length; col++) {
+            if (checkerBoard[row][col] !== '') {
+                checkerBoard[row][col].draw(row, col)
             }
-            x += 100;
         }
-        y += 100;
     }
 }
 
 /* Assingment 2 - Step 1 to 2 */
-function Piece(row, col, color, isClicked, isKing) {
+function Piece(row, col, color) {
     this.row = row;
     this.col = col;
     this.color = color;
-    this.isClicked = isClicked;
-    this.isKing = isKing;
-    this.draw = function () {
+    this.isClicked = false;
+    this.isKing = false;
+    this.draw = function (row, col) {
 
-        if (isClicked == "true") {
-            let radius = 40;
+        let x = 100 * col + 50;
+        let y = 100 * row + 50;
+        
+        if (this.isClicked === true) {
+            let radius = 48;
             ctx.fillStyle = "yellow";
             ctx.beginPath();
-            ctx.arc(col, row, radius, 0, 2 * Math.PI);
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
             ctx.fill();
             ctx.stroke();
         }
 
-        ctx.fillStyle = color;
-        drawCircle(col, row, color);
+        if (checkerBoard[row][col].color === "darkslategrey") {
+            drawCircle(x, y, "darkslategrey")
+        } else if (checkerBoard[row][col].color === "burlywood") {
+            drawCircle(x, y, 'burlywood')
+        }
+
+    }
+
+    this.checkKing = function() {
+        if (this.color === "darkslategrey") {
+            if (this.row === 7) {
+                this.isKing = true;
+            }
+        } else if (this.color === "burlywood") {
+            if (this.row === 0) {
+                this.isKing = true;
+            }
+        }
+    }
+
+    this.move = function(newRow, newCol) {
+        this.row = newRow;
+        this.col = newCol;
+        checkKing();
+    }
+
+    this.isValidMove = function(newRow, newCol) {
+        const moveIsSameColumn = this.col - newCol === 0;
+        const moveIsOneColumnAbsolute = Math.abs(this.col - newCol) === 1;
+        const moveIsTwoColumnsLeft = col - newCol === 2;
+        const moveIsTwoColumnsRight = col - newCol === -2;
+
+        const moveIsSameRow = this.row - newRow === 0;
+        const moveIsOneRowAbsolute = Math.abs(this.row - newRow) === 1;
+        const moveIsOneRowUp = this.row - newRow === 1;
+        const moveIsTwoRowsUp = this.row - newRow === 2;
+        const moveIsOneRowDown = this.row - newRow === -1;
+        const moveIsTwoRowsDown = this.row - newRow === -2;
+        if ((moveIsOneColumnAbsolute && moveIsSameRow) || (moveIsSameColumn && moveIsOneRowAbsolute)) {
+            return false;
+        } else if (checkerBoard[newRow][newCol] === '') {
+            if (moveIsOneColumnAbsolute) {
+                if(
+                (this.color === 'darkslategrey' || this.isKing === true) && 
+                moveIsOneRowDown) {
+                    return true;
+                } else if (
+                (this.color === 'burlywood' || this.isKing === true) &&
+                moveIsOneRowUp) {
+                    return true;
+                }
+            } else if (moveIsTwoColumnsLeft) {
+                if(
+                (this.color === 'darkslategrey' || this.isKing === true) && 
+                moveIsTwoRowsDown && 
+                checkerBoard[this.row + 1][this.col - 1] !== '' &&
+                checkerBoard[this.row + 1][this.col - 1].color !== this.color) {
+                    return true;
+                } else if (
+                (this.color === 'burlywood' || this.isKing === true) && 
+                moveIsTwoRowsUp && 
+                checkerBoard[this.row - 1][this.col - 1].color !== '' &&
+                checkerBoard[this.row - 1][this.col - 1].color !== this.color) {
+                    return true;
+                }
+            
+            }
+        }
+        return false;
     }
 }
 
 function getSelectedPiece() {
-    let isClicked = [];
-
+    let isClickedValue;
     for (let row = 0; row < checkerBoard.length; row++) {
         for (let col = 0; col < checkerBoard[row].length; col++) {
-            let isClickedValue = checkerBoard[row][col].isClicked;
-            if (isClickedValue !== undefined && isClickedValue !== null && isClickedValue !== "false") {
-                isClicked.push(checkerBoard[row][col]);
+            isClickedValue = checkerBoard[row][col].isClicked;
+            if (isClickedValue !== true) {
+                isClickedValue = null;
             } else {
-                isClicked.push("null");
+                return checkerBoard[row][col];
             }
         }
     }
-    return isClicked;
+    return isClickedValue;
 }
 
 /* Assingment 1 - Step */
 document.addEventListener("DOMContentLoaded", function () {
-    drawBoard(checkerBoard);
-    drawPieces(checkerBoard);
+    drawBoard();
+    drawPieces();
 });
 
 /* Assingment 1 - Step 6 */
 canvas.onclick = function (event) {
 
-    x = event.offsetX;
-    y = event.offsetY;
+    x = Math.floor(+event.offsetX/100);
+    y = Math.floor(+event.offsetY/100);
 
-    let row = Math.floor(y / 100);
-    let col = Math.floor(x / 100);
-    let color;
-
-    console.log("Row: " + row + "| Col: " + col);
-
-    let getPieceClicked = getSelectedPiece();
-
-    if (row % 2 == 0) {
-        if (col % 2 !== 0) {
-            color = checkerBoard[row][col];
-            if (color !== '') {
-                // alert(color);
-            } else if (checkerBoard[row][col] == "") {
-                alert("you can move");
+    if (checkerBoard[y][x] !== '') {
+        let selectedPiece = getSelectedPiece()
+        if (selectedPiece !== null) {
+            selectedPiece.isClicked = !selectedPiece.isClicked;
+        }
+        checkerBoard[y][x].isClicked = !checkerBoard[y][x].isClicked;
+    } else {
+        let selectedPiece = getSelectedPiece()
+        if (selectedPiece !== null) {
+            if(selectedPiece.isValidMove(y, x)) {
+                alert('legal!')
             }
         }
-        else {
-            alert("you cannot move");
-        }
-    } else if (row % 2 !== 0) {
-        if (col % 2 == 0) {
-            color = checkerBoard[row][col];
-            if (color !== '') {
-                // alert(color);
-            } else if (checkerBoard[row][col] == "") {
-                alert("you can move");
-            }
-        }
-        else {
-            alert("you CAN'T move");
-        }
-    } 
-    checkerBoard[row][col].isClicked = "true";
-
-
-    drawBoard(checkerBoard);
-    drawPieces(checkerBoard);
+    }
+    console.log(x, y)
+    drawBoard();
+    drawPieces();
 }
 
