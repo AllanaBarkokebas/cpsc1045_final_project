@@ -1,13 +1,12 @@
 const canvas = document.getElementById("my-canvas");
 const ctx = canvas.getContext("2d");
 
-/* Assingment 1 - Step 1 */
 let checkerBoard = [
+    ['', 'darkslategrey', '', '', '', 'darkslategrey', '', 'darkslategrey'],
+    ['darkslategrey', '', 'darkslategrey', '', 'burlywood', '', 'darkslategrey', ''],
     ['', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey'],
-    ['darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', ''],
-    ['', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey'],
-    ['', '', '', '', '', '', 'burlywood', ''],
-    ['', 'darkslategrey', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
     ['burlywood', '', 'burlywood', '', 'burlywood', '', 'burlywood', ''],
     ['', 'burlywood', '', 'burlywood', '', 'burlywood', '', 'burlywood'],
     ['burlywood', '', 'burlywood', '', 'burlywood', '', 'burlywood', '']
@@ -23,7 +22,6 @@ for (let y = 0; y < checkerBoard.length; y++) {
     }
 }
 
-/* Assingment 1 - Step */
 function drawBoard() {
 
     for (let row = 0; row < checkerBoard.length; row++) {
@@ -40,7 +38,6 @@ function drawBoard() {
 
 }
 
-/* Assingment 1 - Step */
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
     ctx.beginPath();
@@ -48,7 +45,6 @@ function drawSquare(x, y, color) {
     ctx.fillRect(x, y, 100, 100);
 }
 
-/* Assingment 1 - Step */
 function drawCircle(x, y, primaryColor) {
     let radius = 45;
     ctx.fillStyle = primaryColor;
@@ -69,7 +65,6 @@ function drawCircle(x, y, primaryColor) {
     ctx.stroke();
 }
 
-/* Assingment 1 - Step / Assignemtn2 - Step 3*/
 function drawPieces() {
     for (let row = 0; row < checkerBoard.length; row++) {
         for (let col = 0; col < checkerBoard[row].length; col++) {
@@ -80,7 +75,6 @@ function drawPieces() {
     }
 }
 
-/* Assingment 2 - Step 1 to 2 */
 function Piece(row, col, color) {
     this.row = row;
     this.col = col;
@@ -107,6 +101,65 @@ function Piece(row, col, color) {
             drawCircle(x, y, 'burlywood')
         }
 
+        if (this.isKing === true) {
+            let primaryColor = "black";
+            let secondaryColor = "maroon";
+
+            if (this.color === "darkslategrey") {
+                primaryColor = "maroon";
+                secondaryColor = "black";
+            }
+
+            let radius = 45;
+            let quarterFromCenter = radius/2;
+            let quarterLeft = x - quarterFromCenter;
+            let quarterRight = x + quarterFromCenter;
+            let quarterDown = y + quarterFromCenter;
+            let quarterUp = y - quarterFromCenter;
+
+            ctx.fillStyle =  primaryColor;
+
+            ctx.beginPath();
+            ctx.lineTo(quarterLeft, quarterDown);
+            ctx.lineTo(quarterRight, quarterDown);
+            ctx.lineTo(quarterRight, quarterUp);
+            ctx.lineTo(x + 10, y);
+            ctx.lineTo(x, quarterUp - 10);
+            ctx.lineTo(x - 10, y);
+            ctx.lineTo(quarterLeft, quarterUp);
+            ctx.lineTo(quarterLeft, quarterDown);
+            ctx.fill();
+
+            ctx.fillStyle = secondaryColor;
+            ctx.beginPath();
+            ctx.lineTo(x, quarterDown - 5);
+            ctx.lineTo(x - 5, quarterDown - 10);
+            ctx.lineTo(x - 5, quarterDown - 20);
+            ctx.lineTo(x, quarterDown - 25);
+            ctx.lineTo(x + 5, quarterDown - 20);
+            ctx.lineTo(x + 5, quarterDown - 10);
+            ctx.lineTo(x, quarterDown - 5);
+            ctx.fill();
+
+            ctx.fillStyle = primaryColor;
+            ctx.beginPath();
+            ctx.arc(x, y + 7, 3, 0, 2*Math.PI)
+            ctx.fill();
+
+
+            ctx.strokeStyle = primaryColor;
+            ctx.beginPath();
+            ctx.lineTo(x, quarterDown - 5);
+            ctx.lineTo(x - 2, quarterDown - 10);
+            ctx.lineTo(x - 2, quarterDown - 20);
+            ctx.lineTo(x, quarterDown - 25);
+            ctx.lineTo(x + 2, quarterDown - 20);
+            ctx.lineTo(x + 2, quarterDown - 10);
+            ctx.lineTo(x, quarterDown - 5);
+            ctx.stroke();
+
+            
+        }
     }
 
     this.checkKing = function() {
@@ -124,21 +177,25 @@ function Piece(row, col, color) {
     this.move = function(newRow, newCol) {
         this.row = newRow;
         this.col = newCol;
-        checkKing();
+        this.checkKing();
     }
 
     this.isValidMove = function(newRow, newCol) {
         const moveIsSameColumn = this.col - newCol === 0;
         const moveIsOneColumnAbsolute = Math.abs(this.col - newCol) === 1;
-        const moveIsTwoColumnsLeft = col - newCol === 2;
-        const moveIsTwoColumnsRight = col - newCol === -2;
+
+        const moveIsTwoColumnsLeft = this.col - newCol === 2;
+        const moveIsTwoColumnsRight = this.col - newCol === -2;
 
         const moveIsSameRow = this.row - newRow === 0;
         const moveIsOneRowAbsolute = Math.abs(this.row - newRow) === 1;
+
         const moveIsOneRowUp = this.row - newRow === 1;
         const moveIsTwoRowsUp = this.row - newRow === 2;
+
         const moveIsOneRowDown = this.row - newRow === -1;
         const moveIsTwoRowsDown = this.row - newRow === -2;
+
         if ((moveIsOneColumnAbsolute && moveIsSameRow) || (moveIsSameColumn && moveIsOneRowAbsolute)) {
             return false;
         } else if (checkerBoard[newRow][newCol] === '') {
@@ -158,15 +215,32 @@ function Piece(row, col, color) {
                 moveIsTwoRowsDown && 
                 checkerBoard[this.row + 1][this.col - 1] !== '' &&
                 checkerBoard[this.row + 1][this.col - 1].color !== this.color) {
+                    checkerBoard[this.row + 1][this.col - 1] = "";
                     return true;
                 } else if (
                 (this.color === 'burlywood' || this.isKing === true) && 
                 moveIsTwoRowsUp && 
-                checkerBoard[this.row - 1][this.col - 1].color !== '' &&
+                checkerBoard[this.row - 1][this.col - 1] !== '' &&
                 checkerBoard[this.row - 1][this.col - 1].color !== this.color) {
+                    checkerBoard[this.row - 1][this.col - 1] = "";
                     return true;
                 }
-            
+            } else if (moveIsTwoColumnsRight) {
+                if(
+                (this.color === 'darkslategrey' || this.isKing === true) && 
+                moveIsTwoRowsDown && 
+                checkerBoard[this.row + 1][this.col + 1] !== '' &&
+                checkerBoard[this.row + 1][this.col + 1].color !== this.color) {
+                    checkerBoard[this.row + 1][this.col + 1] = "";
+                    return true;
+                } else if (
+                (this.color === 'burlywood' || this.isKing === true) && 
+                moveIsTwoRowsUp && 
+                checkerBoard[this.row - 1][this.col + 1] !== '' &&
+                checkerBoard[this.row - 1][this.col + 1].color !== this.color) {
+                    checkerBoard[this.row - 1][this.col + 1] = "";
+                    return true;
+                }
             }
         }
         return false;
@@ -188,13 +262,11 @@ function getSelectedPiece() {
     return isClickedValue;
 }
 
-/* Assingment 1 - Step */
 document.addEventListener("DOMContentLoaded", function () {
     drawBoard();
     drawPieces();
 });
 
-/* Assingment 1 - Step 6 */
 canvas.onclick = function (event) {
 
     x = Math.floor(+event.offsetX/100);
@@ -205,16 +277,21 @@ canvas.onclick = function (event) {
         if (selectedPiece !== null) {
             selectedPiece.isClicked = !selectedPiece.isClicked;
         }
-        checkerBoard[y][x].isClicked = !checkerBoard[y][x].isClicked;
     } else {
         let selectedPiece = getSelectedPiece()
         if (selectedPiece !== null) {
             if(selectedPiece.isValidMove(y, x)) {
-                alert('legal!')
+                let oldPositionX = selectedPiece.col;
+                let oldPositionY = selectedPiece.row;
+                checkerBoard[y][x] = checkerBoard[oldPositionY][oldPositionX];
+                checkerBoard[y][x].move(y, x);
+                checkerBoard[oldPositionY][oldPositionX] = "";
             }
         }
     }
-    console.log(x, y)
+
+    checkerBoard[y][x].isClicked = !checkerBoard[y][x].isClicked;
+
     drawBoard();
     drawPieces();
 }
