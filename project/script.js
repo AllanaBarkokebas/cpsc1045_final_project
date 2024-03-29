@@ -2,8 +2,8 @@ const canvas = document.getElementById("my-canvas");
 const ctx = canvas.getContext("2d");
 
 let checkerBoard = [
-    ['', 'darkslategrey', '', '', '', 'darkslategrey', '', 'darkslategrey'],
-    ['darkslategrey', '', 'darkslategrey', '', 'burlywood', '', 'darkslategrey', ''],
+    ['', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey'],
+    ['darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', ''],
     ['', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey', '', 'darkslategrey'],
     ['', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', ''],
