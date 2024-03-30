@@ -35,7 +35,6 @@ function drawBoard() {
             }
         }
     }
-
 }
 
 function drawSquare(x, y, color) {
@@ -51,7 +50,6 @@ function drawCircle(x, y, primaryColor) {
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI);
     ctx.fill();
-    // ctx.stroke();
 
     let secondaryColor = 'goldenrod';
     if (primaryColor === 'darkslategrey') {
@@ -85,7 +83,7 @@ function Piece(row, col, color) {
 
         let x = 100 * col + 50;
         let y = 100 * row + 50;
-        
+
         if (this.isClicked === true) {
             let radius = 48;
             ctx.fillStyle = "yellow";
@@ -111,13 +109,13 @@ function Piece(row, col, color) {
             }
 
             let radius = 45;
-            let quarterFromCenter = radius/2;
+            let quarterFromCenter = radius / 2;
             let quarterLeft = x - quarterFromCenter;
             let quarterRight = x + quarterFromCenter;
             let quarterDown = y + quarterFromCenter;
             let quarterUp = y - quarterFromCenter;
 
-            ctx.fillStyle =  primaryColor;
+            ctx.fillStyle = primaryColor;
 
             ctx.beginPath();
             ctx.lineTo(quarterLeft, quarterDown);
@@ -143,9 +141,8 @@ function Piece(row, col, color) {
 
             ctx.fillStyle = primaryColor;
             ctx.beginPath();
-            ctx.arc(x, y + 7, 3, 0, 2*Math.PI)
+            ctx.arc(x, y + 7, 3, 0, 2 * Math.PI)
             ctx.fill();
-
 
             ctx.strokeStyle = primaryColor;
             ctx.beginPath();
@@ -157,12 +154,10 @@ function Piece(row, col, color) {
             ctx.lineTo(x + 2, quarterDown - 10);
             ctx.lineTo(x, quarterDown - 5);
             ctx.stroke();
-
-            
         }
     }
 
-    this.checkKing = function() {
+    this.checkKing = function () {
         if (this.color === "darkslategrey") {
             if (this.row === 7) {
                 this.isKing = true;
@@ -174,13 +169,13 @@ function Piece(row, col, color) {
         }
     }
 
-    this.move = function(newRow, newCol) {
+    this.move = function (newRow, newCol) {
         this.row = newRow;
         this.col = newCol;
         this.checkKing();
     }
 
-    this.isValidMove = function(newRow, newCol) {
+    this.isValidMove = function (newRow, newCol) {
         const moveIsSameColumn = this.col - newCol === 0;
         const moveIsOneColumnAbsolute = Math.abs(this.col - newCol) === 1;
 
@@ -200,44 +195,44 @@ function Piece(row, col, color) {
             return false;
         } else if (checkerBoard[newRow][newCol] === '') {
             if (moveIsOneColumnAbsolute) {
-                if(
-                (this.color === 'darkslategrey' || this.isKing === true) && 
-                moveIsOneRowDown) {
+                if (
+                    (this.color === 'darkslategrey' || this.isKing === true) &&
+                    moveIsOneRowDown) {
                     return true;
                 } else if (
-                (this.color === 'burlywood' || this.isKing === true) &&
-                moveIsOneRowUp) {
+                    (this.color === 'burlywood' || this.isKing === true) &&
+                    moveIsOneRowUp) {
                     return true;
                 }
             } else if (moveIsTwoColumnsLeft) {
-                if(
-                (this.color === 'darkslategrey' || this.isKing === true) && 
-                moveIsTwoRowsDown && 
-                checkerBoard[this.row + 1][this.col - 1] !== '' &&
-                checkerBoard[this.row + 1][this.col - 1].color !== this.color) {
+                if (
+                    (this.color === 'darkslategrey' || this.isKing === true) &&
+                    moveIsTwoRowsDown &&
+                    checkerBoard[this.row + 1][this.col - 1] !== '' &&
+                    checkerBoard[this.row + 1][this.col - 1].color !== this.color) {
                     checkerBoard[this.row + 1][this.col - 1] = "";
                     return true;
                 } else if (
-                (this.color === 'burlywood' || this.isKing === true) && 
-                moveIsTwoRowsUp && 
-                checkerBoard[this.row - 1][this.col - 1] !== '' &&
-                checkerBoard[this.row - 1][this.col - 1].color !== this.color) {
+                    (this.color === 'burlywood' || this.isKing === true) &&
+                    moveIsTwoRowsUp &&
+                    checkerBoard[this.row - 1][this.col - 1] !== '' &&
+                    checkerBoard[this.row - 1][this.col - 1].color !== this.color) {
                     checkerBoard[this.row - 1][this.col - 1] = "";
                     return true;
                 }
             } else if (moveIsTwoColumnsRight) {
-                if(
-                (this.color === 'darkslategrey' || this.isKing === true) && 
-                moveIsTwoRowsDown && 
-                checkerBoard[this.row + 1][this.col + 1] !== '' &&
-                checkerBoard[this.row + 1][this.col + 1].color !== this.color) {
+                if (
+                    (this.color === 'darkslategrey' || this.isKing === true) &&
+                    moveIsTwoRowsDown &&
+                    checkerBoard[this.row + 1][this.col + 1] !== '' &&
+                    checkerBoard[this.row + 1][this.col + 1].color !== this.color) {
                     checkerBoard[this.row + 1][this.col + 1] = "";
                     return true;
                 } else if (
-                (this.color === 'burlywood' || this.isKing === true) && 
-                moveIsTwoRowsUp && 
-                checkerBoard[this.row - 1][this.col + 1] !== '' &&
-                checkerBoard[this.row - 1][this.col + 1].color !== this.color) {
+                    (this.color === 'burlywood' || this.isKing === true) &&
+                    moveIsTwoRowsUp &&
+                    checkerBoard[this.row - 1][this.col + 1] !== '' &&
+                    checkerBoard[this.row - 1][this.col + 1].color !== this.color) {
                     checkerBoard[this.row - 1][this.col + 1] = "";
                     return true;
                 }
@@ -269,8 +264,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 canvas.onclick = function (event) {
 
-    x = Math.floor(+event.offsetX/100);
-    y = Math.floor(+event.offsetY/100);
+    x = Math.floor(+event.offsetX / 100);
+    y = Math.floor(+event.offsetY / 100);
 
     if (checkerBoard[y][x] !== '') {
         let selectedPiece = getSelectedPiece()
@@ -280,7 +275,7 @@ canvas.onclick = function (event) {
     } else {
         let selectedPiece = getSelectedPiece()
         if (selectedPiece !== null) {
-            if(selectedPiece.isValidMove(y, x)) {
+            if (selectedPiece.isValidMove(y, x)) {
                 let oldPositionX = selectedPiece.col;
                 let oldPositionY = selectedPiece.row;
                 checkerBoard[y][x] = checkerBoard[oldPositionY][oldPositionX];
